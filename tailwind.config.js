@@ -8,6 +8,8 @@ export default {
         './storage/framework/views/*.php',
         './resources/views/**/*.blade.php',
         './resources/js/**/*.vue',
+        "./node_modules/flowbite/**/*.js",
+
     ],
 
     theme: {
@@ -15,8 +17,24 @@ export default {
             fontFamily: {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
             },
+            colors:{
+                primary:{
+                    100: '#C6F3E3',
+                    200: '#9DE8D5',
+                    300: '#74DDC7',
+                    400: '#4BD2B9',
+                    500: '#32C7AB',
+                    600: '#26A591',
+                    700: '#1F7C6E',
+                    800: '#15524A',
+                    900: '#0B2927',
+                }
+            }
         },
     },
 
-    plugins: [forms],
+    plugins: [forms,
+        require('flowbite/plugin')
+    ],
+    
 };
