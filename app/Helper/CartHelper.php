@@ -3,17 +3,19 @@
 namespace App\Helper;
 
 use App\Models\CartItem;
+use App\Models\Product;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Cookie;
 
 class CartHelper{
-    public static function getCount($user){
-     if($user == auth()->user()){
+    public static function getCount(){
+     if($user = auth()->user()){
         return CartItem::whereUserId($user->id)->sum('quantity');
         }
     }
 
-    public static function getCartItems($user){
-        if($user == auth()->user()){
+    public static function getCartItems(){
+        if($user = auth()->user()){
             return CartItem::whereUserId($user->id)->get()
             ->map(fn(CartItem $item)=> ['product_id' => $item->product_id,'quantity'=> $item->quantity]);
         }
@@ -23,10 +25,14 @@ class CartHelper{
         return json_decode(request()->cookie('cart_items','[]'), true);
     }
     
-    public static function setCookieCartItems($item){
-        Cookie::queue('cart_items',
-        fn(int $carry ,Array $item)
-        => $carry + $item['quantity'],0);
+    // public static function setCookieCartItems(){
+    //     Cookie::queue('cart_items',
+    //     fn(int $carry ,array $item)
+    //     => $carry + $item['quantity'],0);
+    // }
+    public static function setCookieCartItems($cartItems){
+        $totalQuantity = array_reduce($cartItems, fn(int $carry, array $item) => $carry + $item['quantity'], 0);
+        Cookie::queue('cart_items', $totalQuantity);
     }
 
     public static function saveCookieCartItems(){
@@ -72,5 +78,16 @@ class CartHelper{
                 CartItem::insert($newCartItems);
             }
         }
+    }
+
+    public static function getProductsAndCartItems(){
+        $cartItems = self::getCartItems();
+        $ids = [];
+        if ($cartItems) {
+            $ids = Arr::pluck($cartItems, 'product_id');
+        }       
+        $products = Product::whereIn('id', $ids)->with('product_images')->get();
+        $cartItems = Arr::keyBy($cartItems,'product_id');
+        return [$products , $cartItems];
     }
 }

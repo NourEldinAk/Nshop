@@ -46,16 +46,53 @@ class CartController extends Controller
                         'price'=>$product->price,
                     ];
                 }
-                CartHelper::setCookieCartItems($cartItems);
             }
+            CartHelper::setCookieCartItems($cartItems);
 
         }
         return redirect()->back()->with('success','Product Added To Cart');
     }
     public function update(Request $request,Product $product){
-
+        $user = $request->user();
+        $quantity= $product->integer('quantity');
+        if($user){
+            CartItem::where(['user_id' => $user->id, 'product_id'=>$product->id])
+            ->update('quantity',$quantity);
+        }else{
+            $cartItems = CartHelper::getCookieCartItems();
+            foreach($cartItems as $item){
+                if($item['product_id'] == $product['product_id']){
+                    $item['quantity']+= $quantity;
+                    break;
+                }
+            }
+            CartHelper::setCookieCartItems($cartItems);
+        }
+        return redirect()->back();
     }
     public function delete(Request $request,Product $product){
-
+        $user = $request->user();
+        if($user){
+            CartItem::query()->where(['user_id'=> $user->id, 'product_id'=>$product->id])->first()?->delete();
+            if(CartItem::count() <= 0){
+                redirect()->route('home')->with('info','Your Cart is Empty');
+            }else{
+                redirect()->route('home')->with('success','Product Removed From Cart');
+            }
+        }else{
+            $cartItems = CartHelper::getCookieCartItems();
+            foreach($cartItems as $i => $item){
+                if($item['product_id'] == $product['product_id']){
+                    array_splice($cartItems, $i,1);
+                    break;
+                }
+            }
+            CartHelper::setCookieCartItems($cartItems);
+            if(count($cartItems) <= 0){
+                redirect()->route('home')->with('info','Your Cart is Empty');
+            }else{
+                redirect()->route('home')->with('success','Product Removed From Cart');
+            }
+        }
     }
 }

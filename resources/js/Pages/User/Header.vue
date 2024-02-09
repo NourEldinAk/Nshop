@@ -20,7 +20,7 @@ const auth = usePage().props.auth;
       
     <div class="flex items-center justify-center text-sm py-1 px-2 rounded-full md:me-0">
       
-      <span class="mr-3">Welcome <span class="text-primary-600 font-bold">{{auth.user.name }}!</span></span>
+      <span v-if="auth.user" class="mr-3">Welcome <span class="text-primary-600 font-bold">{{auth.user.name }}!</span></span>
       
       <button type="button" class="relative inline-flex items-center p-2 text-sm font-medium text-center text-primary-500 bg-white rounded-lg hover:bg-gray-100  focus:outline-none  dark:primary-600 dark:hover:bg-primary-600 dark:focus:ring-primary-700">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
@@ -67,7 +67,10 @@ const auth = usePage().props.auth;
             <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Earnings</a>
           </li>
           <li>
-            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Sign out</a>
+            <Link :href="route('logout')"
+            method="post"
+            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100
+             dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Sign out</Link>
           </li>
         </ul>
       </div>
