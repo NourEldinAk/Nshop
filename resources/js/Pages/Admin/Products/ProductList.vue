@@ -2,7 +2,6 @@
 import { router, usePage,useForm } from '@inertiajs/vue3';
 import { ref , reactive} from 'vue';
 import 'element-plus/dist/index.css'
-import VueSweetalert2 from 'vue-sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
 import { Plus } from '@element-plus/icons-vue'
 
@@ -176,6 +175,39 @@ const updateProduct= async ()=>{
     }catch(err){
         console.log(err)
     }
+}
+
+const deleteProduct = (product, index)=>{
+    Swal.fire({
+        title:"Are you Sure?",
+        text: "you will delete this product!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor:'#d33',
+        cancelButtonText:'No',
+        confirmButtonText:'Yes, Delete!',
+    }).then((result)=>{
+        if(result.isConfirmed){
+            try{
+                router.delete('products/delete/'+product.id,{
+                    onSuccess:(page)=>{
+                        Swal.fire({
+                            toast:true,
+                            position:'top-end',
+                            timer:3000,
+                            showConfirmButton:false,
+                            icon:'success',
+                            title: page.props.flash.success
+
+                        })
+                    }
+                })
+            }catch(err){
+                console.log(err)
+            }
+        }
+    })
 }
 </script>
 
@@ -369,7 +401,7 @@ const updateProduct= async ()=>{
                             <td class="px-4 py-3">{{ product.category.name }}</td>
                             <td class="px-4 py-3">{{ product.brand.name }}</td>
                             <td class="px-4 py-3">{{ product.quantity }}</td>
-                            <td class="px-4 py-3">{{ product.price }}</td>
+                            <td class="px-4 py-3">{{ product.price }}$</td>
                             <td class="px-4 py-3">
                             <span v-if="product.inStock" class=" w-18 bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-2 rounded dark:bg-green-900 dark:text-green-300">  
                                         InStock</span>
@@ -401,8 +433,9 @@ const updateProduct= async ()=>{
                                         </li>
                                     </ul>
                                     <div class="py-1">
-                                        <a href="#" class="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Delete</a>
+                                        <button @click="deleteProduct(product,index)" class="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white w-full text-left">Delete</button>
                                     </div>
+                                    
                                 </div>
                             </td>
                         </tr>
