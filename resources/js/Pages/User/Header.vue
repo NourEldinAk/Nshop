@@ -13,6 +13,8 @@ const canRegister = usePage().props.canRegister;
 const auth = usePage().props.auth;
 const cart = computed(()=>usePage().props.cart);
 
+const currentRoute = usePage().url;
+
 </script>
 
 <template>
@@ -28,7 +30,7 @@ const cart = computed(()=>usePage().props.cart);
       
     <div class="flex items-center justify-center text-sm py-1 px-2 rounded-full md:me-0">
       
-      <span v-if="auth?.user" class="mr-3">Welcome <span class="text-primary-600 font-bold">{{auth?.user?.name }}!</span></span>
+      <span v-if="auth?.user" class="mr-3">Welcome <span class="text-primary-600 font-bold capitalize">{{auth?.user?.name }}!</span></span>
       
       <Link :href="route('cart.view')"
        as="button"
@@ -96,23 +98,37 @@ const cart = computed(()=>usePage().props.cart);
   <div class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1" id="navbar-user">
     <ul class="flex flex-col font-medium p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
       <li>
-        <Link :href="route('home')" method="get"  class="block py-2 px-3 text-white bg-primary-400 rounded md:bg-transparent md:text-primary-400 md:p-0 md:dark:text-primary-500" aria-current="page">Home</Link>
+        <Link :href="route('home')" method="get"  
+        :class="$page.url=='/'? 'md:text-primary-400':'md:text-gray-800'"
+        class="
+        block py-2 px-3 text-white bg-primary-400 rounded md:bg-transparent  md:p-0 md:dark:text-primary-500" aria-current="page">Home</Link>
       </li>
       <li v-if="auth?.user">
-        <Link :href="route('dashboard')" method="get" as="button" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-primary-400 md:p-0
+        <Link :href="route('dashboard')" method="get" as="button"
+        :class="$page.url=='/dashboard'? 'md:text-primary-400':'md:text-gray-800'"
+
+        class="block py-2 px-3  rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-primary-400 md:p-0
          dark:text-white md:dark:hover:text-primary-500
          dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">My Orders</Link>
       </li>
       <li>
-        <Link :href="route('cart.view')" method="get" as="button" class="block py-2 px-3 text-gray-900 rounded
+        <Link :href="route('cart.view')" method="get" as="button"
+        :class="$page.url.startsWith('/cart/view')? 'md:text-primary-400':'md:text-gray-800'"
+        class="block py-2 px-3 rounded
          hover:bg-gray-100 md:hover:bg-transparent md:hover:text-primary-400 md:p-0 dark:text-white
           md:dark:hover:text-primary-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Cart</Link>
       </li>
       <li>
-        <Link :href="route('products.index')" method="get" as="button" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-primary-400 md:p-0 dark:text-white md:dark:hover:text-primary-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">All Products</Link>
+        <Link :href="route('products.index')" method="get" as="button" 
+        :class="$page.url.startsWith('/products')? 'md:text-primary-400':'md:text-gray-800'"
+
+        class="block py-2 px-3  rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-primary-400 md:p-0 dark:text-white md:dark:hover:text-primary-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">All Products</Link>
       </li>
       <li v-if="auth?.user?.isAdmin == 1">
-        <Link :href="route('admin.products.index')" method="get" as="button" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-primary-400 md:p-0 dark:text-white md:dark:hover:text-primary-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Dashboard</Link>
+        
+        <Link :href="route('admin.products.index')"
+
+        method="get" as="button" class="block py-2 px-3  rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-primary-400 md:p-0 dark:text-white md:dark:hover:text-primary-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Dashboard</Link>
       </li>
     </ul>
   </div>

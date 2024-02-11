@@ -192,13 +192,13 @@ const checkout= ()=>{
                 <label for="address_type" class="leading-7 text-sm text-gray-600">Address Type</label>
                 <input v-model="form.address_type" type="text" id="address_type" name="address_type" class="w-full bg-white rounded border border-gray-300 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
             </div>
-            <div v-if="auth?.user">
+            <div v-if="!auth?.user">
                 <button v-if="formFilled || userAddress" type="submit" class="text-white bg-primary-500 border-0 py-2 px-6 focus:outline-none hover:bg-primary-600 rounded text-lg">Checkout</button>
-                <button v-else type="submit" :disabled="!formFilled" class="text-white bg-gray-400 border-0 py-2 px-6 focus:outline-none hover:bg-primary-600 rounded text-lg">Add Address</button>    
+                <button v-else type="submit" :disabled="!formFilled" class="text-white cursor-not-allowed bg-gray-400 border-0 py-2 px-6 focus:outline-none hover:bg-primary-600 rounded text-lg">Add Address</button>    
                 <p class="text-xs text-gray-500 mt-3">Continue Shopping</p>
 
             </div>
-            <div v-else class="">
+            <div v-else class="flex items-start">
                 <Link :href="route('login')" as="button"  type="button" >
                 <PrimaryButton class="py-3 px-6 ">
                     Login
