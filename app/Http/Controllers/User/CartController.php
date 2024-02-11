@@ -85,8 +85,8 @@ class CartController extends Controller
             ->update(['quantity'=>$quantity]);
         }else{
             $cartItems = CartHelper::getCookieCartItems();
-            foreach($cartItems as $item){
-                if($item['product_id'] == $product['product_id']){
+            foreach ($cartItems as &$item) {
+                if ($item['product_id'] === $product->id) {
                     $item['quantity'] = $quantity;
                     break;
                 }
@@ -95,28 +95,29 @@ class CartController extends Controller
         }
         return redirect()->back();
     }
-    public function delete(Request $request,Product $product){
+    public function delete(Request $request, Product $product)
+    {
         $user = $request->user();
-        if($user){
-            CartItem::query()->where(['user_id'=> $user->id, 'product_id'=>$product->id])->first()?->delete();
-            if(CartItem::count() <= 0){
-                redirect()->route('home')->with('info','Your Cart is Empty');
-            }else{
-                redirect()->route('home')->with('success','Product Removed From Cart');
+        if ($user) {
+            CartItem::query()->where(['user_id' => $user->id, 'product_id' => $product->id])->first()?->delete();
+            if (CartItem::count() <= 0) {
+                return redirect()->route('home')->with('info', 'your cart is empty');
+            } else {
+                return redirect()->back()->with('success', 'item removed successfully');
             }
-        }else{
+        } else {
             $cartItems = CartHelper::getCookieCartItems();
-            foreach($cartItems as $i => $item){
-                if($item['product_id'] == $product['product_id']){
-                    array_splice($cartItems, $i,1);
+            foreach ($cartItems as $i => &$item) {
+                if ($item['product_id'] === $product->id) {
+                    array_splice($cartItems, $i, 1);
                     break;
                 }
             }
             CartHelper::setCookieCartItems($cartItems);
-            if(count($cartItems) <= 0){
-                redirect()->route('home')->with('info','Your Cart is Empty');
-            }else{
-                redirect()->route('home')->with('success','Product Removed From Cart');
+            if (count($cartItems) <= 0) {
+                return redirect()->route('home')->with('info', 'your cart is empty');
+            } else {
+                return redirect()->back()->with('success', 'item removed successfully');
             }
         }
     }

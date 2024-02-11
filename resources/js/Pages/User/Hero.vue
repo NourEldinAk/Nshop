@@ -1,4 +1,7 @@
 <script setup>
+import PrimaryButton from '@/Components/PrimaryButton.vue';
+import { Link } from '@inertiajs/vue3';
+
 
 </script>
 
@@ -11,8 +14,12 @@
 			</h1>
 			<p class="px-8 mt-8 mb-12 text-lg">Discover the joy of effortless shopping. Find curated treasures that inspire, delight, and elevate your everyday moments</p>
 			<div class="flex flex-wrap justify-center">
-				<button class="px-8 py-3 m-2 text-lg font-semibold rounded  bg-primary-300  text-gray-800">Get started</button>
-				<button class="px-8 py-3 m-2 text-lg border rounded  text-gray-50  border-gray-700">Learn more</button>
+				<Link :href="route('products.index')" as="button"  type="button" >
+					<PrimaryButton class="ms-4 bg-primary-500 py-4 px-5 font-bold ">
+                    Get Started
+                </PrimaryButton>
+				</Link>
+			<!-- <button class="px-8 py-3 m-2 text-lg border rounded  text-gray-50  border-gray-700">Learn more</button> -->
 			</div>
 		</div>
 	</section>

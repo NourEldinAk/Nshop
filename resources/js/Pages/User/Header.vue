@@ -28,11 +28,11 @@ const cart = computed(()=>usePage().props.cart);
       
     <div class="flex items-center justify-center text-sm py-1 px-2 rounded-full md:me-0">
       
-      <span v-if="auth.user" class="mr-3">Welcome <span class="text-primary-600 font-bold">{{auth.user.name }}!</span></span>
+      <span v-if="auth?.user" class="mr-3">Welcome <span class="text-primary-600 font-bold">{{auth?.user?.name }}!</span></span>
       
       <Link :href="route('cart.view')"
        as="button"
-        class="relative inline-flex items-center p-2 text-sm font-medium text-center text-primary-500 bg-white rounded-lg hover:bg-gray-100  focus:outline-none  dark:primary-600 dark:hover:bg-primary-600 dark:focus:ring-primary-700">
+        class="relative inline-flex items-center p-2 text-sm font-medium text-center text-primary-500 bg-white rounded-lg hover:bg-gray-100  focus:outline-none  dark:primary-600 dark:hover:bg-primary-600 dark:focus:ring-primary-400">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
         <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
       </svg>
@@ -44,7 +44,7 @@ const cart = computed(()=>usePage().props.cart);
       
 
       </div>
-    <button v-if="auth.user" type="button" class="flex text-sm py-1 px-1 rounded-full md:me-0 focus:ring-4 focus:ring-gray-300 " id="user-menu-button" aria-expanded="false" data-dropdown-toggle="user-dropdown" data-dropdown-placement="bottom">
+    <button v-if="auth?.user" type="button" class="flex text-sm py-1 px-1 rounded-full md:me-0 focus:ring-4 focus:ring-gray-300 " id="user-menu-button" aria-expanded="false" data-dropdown-toggle="user-dropdown" data-dropdown-placement="bottom">
         
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
         <path stroke-linecap="round" stroke-linejoin="round" d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
@@ -63,19 +63,20 @@ const cart = computed(()=>usePage().props.cart);
       <!-- Dropdown menu -->
       <div v-if="auth.user" class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600" id="user-dropdown">
         <div class="px-4 py-3">
-          <span class="block text-sm text-gray-900 dark:text-white">{{ auth.user.name }}</span>
-          <span class="block text-sm  text-gray-500 truncate dark:text-gray-400">{{ auth.user.email }}</span>
+          <span class="block text-sm text-gray-900 dark:text-white">{{ auth?.user.name }}</span>
+          <span class="block text-sm  text-gray-500 truncate dark:text-gray-400">{{ auth?.user.email }}</span>
         </div>
         <ul class="py-2" aria-labelledby="user-menu-button">
           <li>
-            <Link method="get" as="button" :href="route('dashboard')" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white w-full text-left">Dashboard</Link>
+            <Link method="get" as="button" :href="route('dashboard')" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white w-full text-left">My Orders</Link>
+            
           </li>
-          <li>
-            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Settings</a>
+          <li v-if="auth?.user?.isAdmin == 1">
+
+            <Link method="get" as="button" :href="route('admin.products.index')" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white w-full text-left">Admin Dashboard</Link>
           </li>
-          <li>
-            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Earnings</a>
-          </li>
+    
+    
           <li>
             <Link :href="route('logout')"
             method="post"
@@ -95,19 +96,23 @@ const cart = computed(()=>usePage().props.cart);
   <div class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1" id="navbar-user">
     <ul class="flex flex-col font-medium p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
       <li>
-        <a href="#" class="block py-2 px-3 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 md:dark:text-blue-500" aria-current="page">Home</a>
+        <Link :href="route('home')" method="get"  class="block py-2 px-3 text-white bg-primary-400 rounded md:bg-transparent md:text-primary-400 md:p-0 md:dark:text-primary-500" aria-current="page">Home</Link>
+      </li>
+      <li v-if="auth?.user">
+        <Link :href="route('dashboard')" method="get" as="button" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-primary-400 md:p-0
+         dark:text-white md:dark:hover:text-primary-500
+         dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">My Orders</Link>
       </li>
       <li>
-        <a href="#" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">About</a>
+        <Link :href="route('cart.view')" method="get" as="button" class="block py-2 px-3 text-gray-900 rounded
+         hover:bg-gray-100 md:hover:bg-transparent md:hover:text-primary-400 md:p-0 dark:text-white
+          md:dark:hover:text-primary-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Cart</Link>
       </li>
       <li>
-        <a href="#" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Services</a>
+        <Link :href="route('products.index')" method="get" as="button" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-primary-400 md:p-0 dark:text-white md:dark:hover:text-primary-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">All Products</Link>
       </li>
-      <li>
-        <a href="#" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Pricing</a>
-      </li>
-      <li>
-        <a href="#" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Contact</a>
+      <li v-if="auth?.user?.isAdmin == 1">
+        <Link :href="route('admin.products.index')" method="get" as="button" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-primary-400 md:p-0 dark:text-white md:dark:hover:text-primary-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Dashboard</Link>
       </li>
     </ul>
   </div>

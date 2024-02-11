@@ -6,19 +6,7 @@ import {router, Link} from '@inertiajs/vue3'
         
     })
     const addToCart= (product)=>{
-        router.post(route('cart.store', product) ,{
-            onSuccess: page=>{
-                if(page.props.flash.success){
-                    Swal.fire({
-                        toast:true,
-                        icon:'success',
-                        position: 'top-end',
-                        showConfirmButton:false,
-                        title: page.props.flash.success,
-                    })
-                }
-            }
-        })
+        router.post(route('cart.store', product) )
     }
 </script>
 

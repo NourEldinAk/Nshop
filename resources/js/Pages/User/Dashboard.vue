@@ -11,7 +11,7 @@
     <UserLayout>
 
         <div class="relative max-w-screen-xl py-24  mx-auto my-10 overflow-x-auto">
-    <table v-show="order.order_items.length>0" v-for="order in orders" class="w-full text-sm text-left rtl:text-right mt-8 text-gray-500 dark:text-gray-400">
+    <table  v-show="order.order_items.length>0" v-for="order in orders" class="w-full text-sm text-left rtl:text-right mt-8 text-gray-500 dark:text-gray-400">
         <thead class="text-xs text-gray-700 uppercase  bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr>
                 <th scope="col" class="px-6 py-3">
@@ -52,6 +52,11 @@
 
         </tbody>
     </table>
+    <div class="relative max-w-screen-xl py-24  mx-auto my-10 overflow-x-auto">
+    <table class="w-full text-sm text-center rtl:text-right mt-8 text-gray-500 dark:text-gray-400">
+            <p>You Didn't Make Any Orders Yet</p>
+        </table>
+        </div>
 </div>
     </UserLayout>
 

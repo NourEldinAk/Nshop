@@ -9,9 +9,11 @@ use Inertia\Inertia;
 
 class DashboardController extends Controller
 {
-    public function index(){
-        $orders = Order::with('order_items.product.brand', 'order_items.product.category')->get();
-        return Inertia::render('User/Dashboard',[
+    public function index(Request $request){
+        $orders = Order::where('created_by', $request->user()->id)
+        ->with('order_items.product.brand', 'order_items.product.category')
+        ->get();
+return Inertia::render('User/Dashboard',[
             'orders'=>$orders,
         ]);
         
