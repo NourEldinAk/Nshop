@@ -4,14 +4,37 @@ namespace App\Http\Controllers\User;
 
 use App\Helper\CartHelper;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\CartResource;
 use App\Models\CartItem;
 use App\Models\Product;
+use App\Models\UserAddress;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class CartController extends Controller
 {
-    public function view(){
+    public function view(Request $request, Product $product){
+        $user = $request->user();
+        if($user){
+            $cartItems = CartItem::where("user_id", $user->id)->get();
+            $userAddress = UserAddress::where("user_id", $user->id)->where('isMain',1)->first();
+            return Inertia::render('User/CartList',[
+                'cartItems'=> $cartItems,
+                'userAddress' => $userAddress,
+            ]);
+        }else{
+            $cartItems = CartHelper::getCookieCartItems();
+            if(count($cartItems) > 0){
+                $cartItems = new CartResource(CartHelper::getProductsAndCartItems());
+                
+                return Inertia::render('User/CartList',[
+                    'cartItems'=> $cartItems,
+                ]);
+            }else{
+                return redirect()->back()->with('info','Your Cart Is Empty');
+            }
 
+        }
     }
     public function store(Request $request,Product $product){
         $quantity = $request->post("quantity", 1);
@@ -24,7 +47,7 @@ class CartController extends Controller
             }else{
                 CartItem::create([
                     "user_id"=> $user->id,
-                    "quantity"=> $quantity,
+                    "quantity"=> 1,
                     "product_id"=> $product->id
                 ]);
             }
@@ -32,21 +55,23 @@ class CartController extends Controller
             $cartItems = CartHelper::getCookieCartItems();
             $isProductExist = false;
             foreach($cartItems as $cartItem){
-                if($cartItem->product_id == $product->id){
+                if($cartItem['product_id'] == $product->id){
                     $cartItem['quantity']+= $quantity;
                     $isProductExist = true;
                     break;
                 }
 
-                if(!$isProductExist){
-                    $cartItems[]=[
-                        'user_id'=> $user->id,
-                        'quantity'=> $quantity,
-                        'product_id'=> $product->id,
-                        'price'=>$product->price,
-                    ];
-                }
             }
+            
+            if(!$isProductExist){
+                $cartItems[]=[
+                    'user_id'=> null,
+                    'quantity'=> $quantity,
+                    'product_id'=> $product->id,
+                    'price'=>$product->price,
+                ];
+            }
+
             CartHelper::setCookieCartItems($cartItems);
 
         }
@@ -54,15 +79,15 @@ class CartController extends Controller
     }
     public function update(Request $request,Product $product){
         $user = $request->user();
-        $quantity= $product->integer('quantity');
+        $quantity= $request->integer('quantity');
         if($user){
             CartItem::where(['user_id' => $user->id, 'product_id'=>$product->id])
-            ->update('quantity',$quantity);
+            ->update(['quantity'=>$quantity]);
         }else{
             $cartItems = CartHelper::getCookieCartItems();
             foreach($cartItems as $item){
                 if($item['product_id'] == $product['product_id']){
-                    $item['quantity']+= $quantity;
+                    $item['quantity'] = $quantity;
                     break;
                 }
             }

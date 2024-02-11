@@ -13,17 +13,25 @@ class CategorySeeder extends Seeder
      */
     public function run(): void
     {
+        // Category::create([
+        //     "name"=> "Computer",
+        //     "slug"=> "computer",
+        // ]);
+        // Category::create([
+        //     "name"=> "Headphones",
+        //     "slug"=> "headphones",
+        // ]);
+        // Category::create([
+        //     "name"=> "Watch",
+        //     "slug"=> "watch",
+        // ]);
+        // Category::create([
+        //     "name"=> "Clothes",
+        //     "slug"=> "clothes",
+        // ]);
         Category::create([
-            "name"=> "Computer",
-            "slug"=> "computer",
-        ]);
-        Category::create([
-            "name"=> "Phone",
-            "slug"=> "phone",
-        ]);
-        Category::create([
-            "name"=> "Watch",
-            "slug"=> "watch",
+            "name"=> "Other",
+            "slug"=> "other",
         ]);
     }
 }

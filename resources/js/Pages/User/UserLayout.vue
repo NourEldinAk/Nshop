@@ -1,5 +1,5 @@
 <script setup>
-import Hero from './Hero.vue';
+
 import Header from './Header.vue';
 
 import Footer from './Footer.vue';
@@ -9,7 +9,6 @@ import Footer from './Footer.vue';
     <Header> </Header>
 
 
-    <Hero/>
 
     <slot></slot>
 

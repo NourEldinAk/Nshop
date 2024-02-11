@@ -1,13 +1,21 @@
 <script setup>
 import {usePage,Link} from '@inertiajs/vue3'
+import 'sweetalert2/dist/sweetalert2.min.css';
+import {computed} from 'vue'
+import { onMounted } from 'vue'
+import { initFlowbite } from 'flowbite'
+
+onMounted(() => {
+        initFlowbite();
+    })
 const canLogin =  usePage().props.canLogin;
 const canRegister = usePage().props.canRegister;
 const auth = usePage().props.auth;
+const cart = computed(()=>usePage().props.cart);
 
 </script>
 
 <template>
-
 <nav class="bg-white border-gray-200 dark:bg-gray-900">
   <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
   <Link href="/" class="flex items-center space-x-2 rtl:space-x-reverse">
@@ -16,19 +24,21 @@ const auth = usePage().props.auth;
 </svg>
       <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">Nshop</span>
 </Link>
-  <div v-if="canLogin" class="flex items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
+  <div v-if="canLogin || auth" class="flex items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
       
     <div class="flex items-center justify-center text-sm py-1 px-2 rounded-full md:me-0">
       
       <span v-if="auth.user" class="mr-3">Welcome <span class="text-primary-600 font-bold">{{auth.user.name }}!</span></span>
       
-      <button type="button" class="relative inline-flex items-center p-2 text-sm font-medium text-center text-primary-500 bg-white rounded-lg hover:bg-gray-100  focus:outline-none  dark:primary-600 dark:hover:bg-primary-600 dark:focus:ring-primary-700">
+      <Link :href="route('cart.view')"
+       as="button"
+        class="relative inline-flex items-center p-2 text-sm font-medium text-center text-primary-500 bg-white rounded-lg hover:bg-gray-100  focus:outline-none  dark:primary-600 dark:hover:bg-primary-600 dark:focus:ring-primary-700">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
         <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
       </svg>
       <span class="sr-only">Cart</span>
-        <div class="absolute inline-flex items-center justify-center w-6 h-6 text-[11px] font-bold text-white bg-primary-500 border-2 border-white rounded-full -top-1 -end-1 dark:border-gray-900">20</div>
-      </button>
+        <div class="absolute inline-flex items-center justify-center w-6 h-6 text-[11px] font-bold text-white bg-primary-500 border-2 border-white rounded-full -top-1 -end-1 dark:border-gray-900">  {{ cart.data.count }}</div>
+    </Link>
 
       
       
@@ -51,14 +61,14 @@ const auth = usePage().props.auth;
 
 
       <!-- Dropdown menu -->
-      <div class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600" id="user-dropdown">
+      <div v-if="auth.user" class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600" id="user-dropdown">
         <div class="px-4 py-3">
-          <span class="block text-sm text-gray-900 dark:text-white">Bonnie Green</span>
-          <span class="block text-sm  text-gray-500 truncate dark:text-gray-400">name@flowbite.com</span>
+          <span class="block text-sm text-gray-900 dark:text-white">{{ auth.user.name }}</span>
+          <span class="block text-sm  text-gray-500 truncate dark:text-gray-400">{{ auth.user.email }}</span>
         </div>
         <ul class="py-2" aria-labelledby="user-menu-button">
           <li>
-            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Dashboard</a>
+            <Link method="get" as="button" :href="route('dashboard')" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white w-full text-left">Dashboard</Link>
           </li>
           <li>
             <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Settings</a>
@@ -69,8 +79,9 @@ const auth = usePage().props.auth;
           <li>
             <Link :href="route('logout')"
             method="post"
+            as="button"
             class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100
-             dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Sign out</Link>
+             dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white w-full text-left">Sign out</Link>
           </li>
         </ul>
       </div>

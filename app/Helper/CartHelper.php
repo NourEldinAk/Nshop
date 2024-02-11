@@ -12,12 +12,15 @@ class CartHelper{
      if($user = auth()->user()){
         return CartItem::whereUserId($user->id)->sum('quantity');
         }
+        return array_reduce(self::getCookieCartItems(), fn($carry , $item)=> $carry + $item['quantity'],0);
     }
 
     public static function getCartItems(){
         if($user = auth()->user()){
             return CartItem::whereUserId($user->id)->get()
             ->map(fn(CartItem $item)=> ['product_id' => $item->product_id,'quantity'=> $item->quantity]);
+        }else{
+            return self::getCookieCartItems();
         }
     }
 
@@ -31,8 +34,7 @@ class CartHelper{
     //     => $carry + $item['quantity'],0);
     // }
     public static function setCookieCartItems($cartItems){
-        $totalQuantity = array_reduce($cartItems, fn(int $carry, array $item) => $carry + $item['quantity'], 0);
-        Cookie::queue('cart_items', $totalQuantity);
+        Cookie::queue('cart_items', json_encode($cartItems),60*24*30);
     }
 
     public static function saveCookieCartItems(){
@@ -80,14 +82,13 @@ class CartHelper{
         }
     }
 
-    public static function getProductsAndCartItems(){
+    public static function getProductsAndCartItems()
+    {
         $cartItems = self::getCartItems();
-        $ids = [];
-        if ($cartItems) {
-            $ids = Arr::pluck($cartItems, 'product_id');
-        }       
+
+        $ids = Arr::pluck($cartItems, 'product_id');
         $products = Product::whereIn('id', $ids)->with('product_images')->get();
-        $cartItems = Arr::keyBy($cartItems,'product_id');
-        return [$products , $cartItems];
+        $cartItems = Arr::keyBy($cartItems, 'product_id');
+        return [$products, $cartItems];
     }
 }
