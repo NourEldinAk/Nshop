@@ -12,11 +12,14 @@ defineProps({
 })
 
 
-
+const isDisabled = true;
 const products = computed(()=>usePage().props.cart.data.products)
 const items = computed(()=>usePage().props.cart.data.items)
 const total = computed(()=>usePage().props.cart.data.total)
 const itemId = (id)=> items.value.findIndex((item)=> item.product_id === id)
+const auth = usePage().props.auth
+
+const errors =  usePage().props.errors
 
 const updateQuantity = (product,quantity)=>
         router.patch(route('cart.update', product),{
@@ -43,13 +46,19 @@ const formFilled = computed(()=>{
 })
 
 const checkout= ()=>{
+    console.log(errors)
     router.visit(route('checkout.store'),{
         method:'post',
         data:{
             cartItems : usePage().props.cart.data.items,
             products : usePage().props.cart.data.products,
             total:usePage().props.cart.data.total,
-            address: form
+            state: form.state,
+            city: form.city,
+            country_code: form.country_code,
+            address_type:form.address_type,
+            zipcode:form.zipcode,
+            address: form.address
 
         }
     })
@@ -67,11 +76,11 @@ const checkout= ()=>{
  
         <section class="text-gray-600 body-font relative">
         <div class="container px-5 py-24 mx-auto flex md:flex-nowrap flex-wrap">
-            <div class="lg:w-2/3 md:w-1/2  rounded-lg overflow-hidden sm:mr-10 p-10 ">
+            <div class="lg:w-2/3 md:w-1/2 w-full mb-auto  rounded-lg overflow-hidden sm:mr-10 p-10 ">
                 <!-- Start Cart Items  -->
 
 
-                <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+                <div v-if="products.length > 0" class="relative overflow-x-auto shadow-md sm:rounded-lg">
     <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
         <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr>
@@ -151,12 +160,23 @@ const checkout= ()=>{
     </table>
 </div>
 
-            </div>
+<div v-else class=" overflow-x-auto border-2 border-gray-200 p-10 rounded-lg text-center w-full md:w-2/3 mx-auto md:py-24">
+<p class="text-lg font-extrabold text-gray-400">Your Cart is Empty!</p> 
+<Link
+:href="route('products.index')"
+method="get"
+as="button"
+class="text-primary-400 font-extrabold hover:text-gray-700 transition ease-in-out duration-200 text-md"
+>
+    Start Shopping... </Link>
+</div>
+
+</div>
                 <!-- Send Cart Items -->
             <div class="lg:w-1/3 md:w-1/2 bg-white flex flex-col md:ml-auto w-full md:py-8 mt-8 md:mt-0">
             <form @submit.prevent="checkout">
             <h2 class="text-gray-900 text-lg mb-1 font-medium title-font">Summary</h2>
-            <p class="leading-relaxed mb-5 text-gray-600">Total: ${{ total?.toFixed(2) }}</p>
+            <p class="leading-relaxed mb-5 text-gray-600">Total: ${{total > 0 ?  total?.toFixed(2) : 0 }}</p>
             <h2 class="text-gray-900 text-lg mb-1 font-medium title-font">Shipping Address</h2>
                 <div v-if="userAddress">
                 <p  class="leading-relaxed mb-5 text-gray-600">{{userAddress.address1}},
@@ -171,34 +191,52 @@ const checkout= ()=>{
             <div class="relative mb-4">
                 <label  for="address" class="leading-7 text-sm text-gray-600">Address</label>
                 <input v-model="form.address" type="text" id="address" name="address" class="w-full bg-white rounded border border-gray-300 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
+                <p v-if="errors.address">{{ errors.address }}</p>
             </div>
                 <div class="relative mb-4">
                 <label  for="state" class="leading-7 text-sm text-gray-600">State</label>
                 <input v-model="form.state" type="text" id="state" name="state" class="w-full bg-white rounded border border-gray-300 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
+                <p class="text-red-500" v-if="errors.state">{{ errors.state }}</p>
+
             </div>
             <div class="relative mb-4">
                 <label  for="city" class="leading-7 text-sm text-gray-600">City</label>
                 <input v-model="form.city" type="text" id="city" name="city" class="w-full bg-white rounded border border-gray-300 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
+                <p class="text-red-500" v-if="errors.city">{{ errors.city }}</p>
+
             </div>
             <div class="relative mb-4">
                 <label  for="zipcode" class="leading-7 text-sm text-gray-600">Zipcode</label>
                 <input v-model="form.zipcode" type="text" id="zipcode" name="zipcode" class="w-full bg-white rounded border border-gray-300 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
+                <p class="text-red-500" v-if="errors.zipcode">{{ errors.zipcode }}</p>
+
             </div>
             <div class="relative mb-4">
                 <label  for="country_code" class="leading-7 text-sm text-gray-600">Country Code</label>
                 <input v-model="form.country_code" type="text" id="country_code" name="country_code" class="w-full bg-white rounded border border-gray-300 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
+                <p class="text-red-500" v-if="errors.country_code">{{ errors.country_code }}</p>
+
             </div>
             <div class="relative mb-4">
                 <label for="address_type" class="leading-7 text-sm text-gray-600">Address Type</label>
                 <input v-model="form.address_type" type="text" id="address_type" name="address_type" class="w-full bg-white rounded border border-gray-300 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
-            </div>
-            <div v-if="!auth?.user">
-                <button v-if="formFilled || userAddress" type="submit" class="text-white bg-primary-500 border-0 py-2 px-6 focus:outline-none hover:bg-primary-600 rounded text-lg">Checkout</button>
-                <button v-else type="submit" :disabled="!formFilled" class="text-white cursor-not-allowed bg-gray-400 border-0 py-2 px-6 focus:outline-none hover:bg-primary-600 rounded text-lg">Add Address</button>    
-                <p class="text-xs text-gray-500 mt-3">Continue Shopping</p>
+                <p class="text-red-500" v-if="errors.addree_type">{{ errors.address_type }}</p>
 
             </div>
-            <div v-else class="flex items-start">
+            <div v-if="auth?.user">
+                <div v-if="items.length > 0">
+                    <button v-if="formFilled || userAddress" type="submit" class="text-white bg-primary-500 border-0 py-2 px-6 focus:outline-none hover:bg-primary-600 rounded text-lg">Checkout</button>
+                    <button v-else type="submit" :disabled="!formFilled" class="text-white cursor-not-allowed bg-gray-400 border-0 py-2 px-6 focus:outline-none hover:bg-primary-600 rounded text-lg">Add Address</button>    
+
+                </div>
+                <div v-else >
+                <button  type="submit"  class="text-white cursor-not-allowed bg-red-400 border-0 py-2 px-6 focus:outline-none  rounded text-lg transition duration-150 ease-in-out" :disabled='isDisabled'>Empty Cart</button>    
+
+                </div>
+                <p class="text-xs text-gray-500 mt-3">Continue Shopping...</p>
+
+            </div>
+            <div v-else class="">
                 <Link :href="route('login')" as="button"  type="button" >
                 <PrimaryButton class="py-3 px-6 ">
                     Login

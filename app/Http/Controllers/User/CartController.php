@@ -27,13 +27,13 @@ class CartController extends Controller
             if(count($cartItems) > 0){
                 $cartItems = new CartResource(CartHelper::getProductsAndCartItems());
                 
-                return Inertia::render('User/CartList',[
-                    'cartItems'=> $cartItems,
-                ]);
             }else{
-                return redirect()->back()->with('info','Your Cart Is Empty');
+                // return redirect()->back()->with('info','Your Cart Is Empty');
             }
-
+            
+            return Inertia::render('User/CartList',[
+                'cartItems'=> $cartItems,
+            ]);
         }
     }
     public function store(Request $request,Product $product){
@@ -75,7 +75,6 @@ class CartController extends Controller
             CartHelper::setCookieCartItems($cartItems);
 
         }
-        return redirect()->back()->with('success','Product Added To Cart');
     }
     public function update(Request $request,Product $product){
         $user = $request->user();
@@ -92,8 +91,7 @@ class CartController extends Controller
                 }
             }
             CartHelper::setCookieCartItems($cartItems);
-        }
-        return redirect()->back();
+        }    
     }
     public function delete(Request $request, Product $product)
     {

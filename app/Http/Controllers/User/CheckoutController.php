@@ -17,6 +17,15 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class CheckoutController extends Controller
 {
     public function store(Request $request){
+        $request->validate([
+            'address' => 'required',
+            'state'=>'required',
+            'country_code'=>'required|max:3',
+            "zipcode"=> 'required',
+            'city'=>'required',
+            'address_type'=> 'required'
+
+        ]);
         
         $user = $request->user();
         $cartItems = $request->cartItems;

@@ -135,10 +135,10 @@ defineProps({
               <span class="sr-only">View grid</span>
               <Squares2X2Icon class="h-5 w-5" aria-hidden="true" />
             </button>
-            <button type="button" class="-m-2 ml-4 p-2 text-gray-400 hover:text-gray-500 sm:ml-6 lg:hidden" @click="mobileFiltersOpen = true">
+            <!-- <button type="button" class="-m-2 ml-4 p-2 text-gray-400 hover:text-gray-500 sm:ml-6 lg:hidden" @click="mobileFiltersOpen = true">
               <span class="sr-only">Filters</span>
               <FunnelIcon class="h-5 w-5" aria-hidden="true" />
-            </button>
+            </button> -->
           </div>
         </div>
 
@@ -147,7 +147,7 @@ defineProps({
 
           <div class="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-4">
             <!-- Filters -->
-            <form class="hidden lg:block">
+            <form class="lg:block">
             <!-- start price filter  -->
                                 <h3 class="sr-only">Prices</h3>
                                 <!-- price filter -->
