@@ -2,6 +2,17 @@
 
 This is a full-stack E-commerce application built with Laravel, Vue.js, Tailwind.css, and Inertia.js. The application allows users to browse products, filter and sort them by brand and category, manage their cart, and proceed to checkout using Stripe payment integration. Additionally, there's an admin dashboard that provides insights into product status, sales, orders, and allows admin users to manage products and orders.
 
+## Screenshots
+
+![Screenshot 1](Screenshots/2.png)
+![Screenshot 2](Screenshots/4.png)
+![Screenshot 3](Screenshots/5.png)
+![Screenshot 4](Screenshots/6.png)
+![Screenshot 5](Screenshots/7.png)
+![Screenshot 6](Screenshots/8.png)
+![Screenshot 7](Screenshots/9.png)
+
+
 ## Features
 
 
