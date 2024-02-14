@@ -19,7 +19,7 @@ class CartController extends Controller
             $cartItems = CartItem::where("user_id", $user->id)->get();
             $userAddress = UserAddress::where("user_id", $user->id)->where('isMain',1)->first();
             return Inertia::render('User/CartList',[
-                'cartItems'=> $cartItems,
+                'items'=> $cartItems,
                 'userAddress' => $userAddress,
             ]);
         }else{
@@ -32,7 +32,7 @@ class CartController extends Controller
             }
             
             return Inertia::render('User/CartList',[
-                'cartItems'=> $cartItems,
+                'items'=> $cartItems,
             ]);
         }
     }

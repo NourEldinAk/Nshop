@@ -8,7 +8,8 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 
 
 defineProps({
-    userAddress: Array
+    userAddress: Array,
+    items: Array
 })
 
 
